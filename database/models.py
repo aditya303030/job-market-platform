@@ -57,18 +57,24 @@ class JobPosting(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     company_id: Mapped[int | None] = mapped_column(ForeignKey("companies.id"))
     title_id: Mapped[int | None] = mapped_column(ForeignKey("job_titles_normalized.id"))
+    source: Mapped[str] = mapped_column(String(50), nullable=False)
+    external_id: Mapped[str] = mapped_column(String(255), nullable=False)
     raw_title: Mapped[str] = mapped_column(String(500), nullable=False)
     location: Mapped[str | None] = mapped_column(String(255))
     salary_min: Mapped[float | None] = mapped_column(Numeric(12, 2))
     salary_max: Mapped[float | None] = mapped_column(Numeric(12, 2))
+    salary_is_predicted: Mapped[bool | None] = mapped_column()
     currency: Mapped[str | None] = mapped_column(String(10))
     posted_date: Mapped[date | None] = mapped_column(Date)
-    source: Mapped[str] = mapped_column(String(50), nullable=False)
     raw_description: Mapped[str | None] = mapped_column(Text)
 
     company: Mapped["Company"] = relationship(back_populates="postings")
     title: Mapped["JobTitleNormalized"] = relationship(back_populates="postings")
     skills: Mapped[list["JobSkill"]] = relationship(back_populates="posting")
+
+    __table_args__ = (
+        UniqueConstraint("source", "external_id", name="uq_job_postings_source_external_id"),
+    )
 
 
 class Skill(Base):

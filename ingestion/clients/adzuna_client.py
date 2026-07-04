@@ -1,9 +1,26 @@
+import time
 import os
 from .base_client import get_with_retries
 
 BASE_URL = "https://api.adzuna.com/v1/api/jobs"
 
-def fetch_postings(what=None, where=None, max_pages=1, results_per_page=50):
+
+def fetch_categories() -> list[dict]:
+    """Returns Adzuna's own list of category tags for the configured country,
+    e.g. [{"tag": "it-jobs", "label": "IT Jobs"}, ...]"""
+    app_id = os.getenv("ADZUNA_APP_ID")
+    app_key = os.getenv("ADZUNA_APP_KEY")
+    country = os.getenv("ADZUNA_COUNTRY", "us")
+
+    url = f"{BASE_URL}/{country}/categories"
+    data = get_with_retries(url, params={"app_id": app_id, "app_key": app_key})
+    return data.get("results", [])
+
+
+def fetch_postings(category=None, where=None, max_pages=1, results_per_page=50):
+    """Yields raw posting dicts from Adzuna's search endpoint, filtered by
+    category tag (not keyword search)."""
+
     app_id = os.getenv("ADZUNA_APP_ID")
     app_key = os.getenv("ADZUNA_APP_KEY")
     country = os.getenv("ADZUNA_COUNTRY", "us")
@@ -14,8 +31,8 @@ def fetch_postings(what=None, where=None, max_pages=1, results_per_page=50):
     for page in range(1, max_pages + 1):
         url = f"{BASE_URL}/{country}/search/{page}"
         params = {"app_id": app_id, "app_key": app_key, "results_per_page": results_per_page}
-        if what:
-            params["what"] = what
+        if category:
+            params["category"] = category
         if where:
             params["where"] = where
 
@@ -25,6 +42,9 @@ def fetch_postings(what=None, where=None, max_pages=1, results_per_page=50):
             break
         for job in results:
             yield job
+
+        time.sleep(0.5)
+
 
 def external_id(job: dict) -> str:
     return str(job["id"])
