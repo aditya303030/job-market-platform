@@ -1,16 +1,30 @@
-
 import os
 import streamlit as st
 import pandas as pd
+from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
+
+load_dotenv()
 
 st.set_page_config(page_title="Job Market Explorer", layout="wide")
 
 
+def get_database_url() -> str:
+    db_url = os.getenv("DATABASE_URL")
+    if db_url:
+        return db_url
+    try:
+        return st.secrets["DATABASE_URL"]
+    except Exception:
+        raise RuntimeError(
+            "DATABASE_URL not found. Set it in a local .env file, "
+            "or in Streamlit Cloud's Secrets under app settings."
+        )
+
+
 @st.cache_resource
 def get_engine():
-    db_url = st.secrets.get("DATABASE_URL", os.getenv("DATABASE_URL"))
-    return create_engine(db_url, pool_pre_ping=True, pool_recycle=300)
+    return create_engine(get_database_url(), pool_pre_ping=True, pool_recycle=300)
 
 
 @st.cache_data(ttl=3600)
@@ -60,4 +74,5 @@ else:
         st.info("Not enough skill data extracted for this title yet.")
     else:
         st.bar_chart(skills.set_index("skill_name")["pct_of_postings"])
-        st.caption(f"Based on {int(jobs.loc[jobs['canonical_title'] == selected_job, 'posting_count'].iloc[0])} postings for this title.")
+        sample_size = int(jobs.loc[jobs["canonical_title"] == selected_job, "posting_count"].iloc[0])
+        st.caption(f"Based on {sample_size} postings for this title.")
