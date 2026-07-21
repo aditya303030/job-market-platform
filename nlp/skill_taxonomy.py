@@ -21,6 +21,8 @@ SKILL_TAXONOMY = [
     ("Looker", "tool"),
     ("SAS", "tool"),
     ("SPSS", "tool"),
+    ("Microsoft Office", "tool"),
+    ("data entry", "tool"),
 
     # Cloud / infrastructure
     ("AWS", "cloud"),
@@ -60,15 +62,41 @@ SKILL_TAXONOMY = [
     ("leadership", "soft_skill"),
     ("problem solving", "soft_skill"),
     ("time management", "soft_skill"),
+    ("attention to detail", "soft_skill"),
+    ("customer service", "soft_skill"),
+    ("teamwork", "soft_skill"),
+    ("multitasking", "soft_skill"),
+    ("organizational skills", "soft_skill"),
 
     # Finance / analyst-specific
     ("financial modeling", "concept"),
     ("forecasting", "concept"),
     ("budgeting", "concept"),
     ("Salesforce", "tool"),
+    ("bookkeeping", "concept"),
+    ("accounts payable", "concept"),
+    ("accounts receivable", "concept"),
 
     # Security
     ("cybersecurity", "concept"),
     ("penetration testing", "concept"),
     ("network security", "concept"),
+
+    # Operations / warehouse / retail
+    ("inventory management", "concept"),
+    ("supply chain", "concept"),
+    ("forklift", "tool"),
+    ("point of sale", "tool"),
+    ("scheduling", "concept"),
+    ("quality control", "concept"),
+
+    # Healthcare
+    ("patient care", "concept"),
+    ("HIPAA", "concept"),
+    ("electronic health records", "tool"),
+
+    # Certifications
+    ("CPA", "certification"),
+    ("PMP", "certification"),
+    ("Six Sigma", "certification"),
 ]

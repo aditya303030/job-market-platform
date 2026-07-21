@@ -6,8 +6,6 @@ BASE_URL = "https://api.adzuna.com/v1/api/jobs"
 
 
 def fetch_categories() -> list[dict]:
-    """Returns Adzuna's own list of category tags for the configured country,
-    e.g. [{"tag": "it-jobs", "label": "IT Jobs"}, ...]"""
     app_id = os.getenv("ADZUNA_APP_ID")
     app_key = os.getenv("ADZUNA_APP_KEY")
     country = os.getenv("ADZUNA_COUNTRY", "us")
@@ -18,9 +16,6 @@ def fetch_categories() -> list[dict]:
 
 
 def fetch_postings(category=None, where=None, max_pages=1, results_per_page=50):
-    """Yields raw posting dicts from Adzuna's search endpoint, filtered by
-    category tag (not keyword search)."""
-
     app_id = os.getenv("ADZUNA_APP_ID")
     app_key = os.getenv("ADZUNA_APP_KEY")
     country = os.getenv("ADZUNA_COUNTRY", "us")
